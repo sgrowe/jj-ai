@@ -1,8 +1,10 @@
-# Claude plugin for jj VCS
+# Claude plugins for jj VCS
 
-A Claude Code plugin for planning and organising work using [jj](https://github.com/jj-vcs/jj) VCS.
+A Claude Code plugin marketplace for [jj](https://github.com/jj-vcs/jj) VCS.
 
-Uses empty "future" commits to plan out work as a chain of TODO changes descending from the current working copy, then implements them one at a time.
+## jj-flow
+
+Plans and organises work using empty "future" commits as a chain of TODO changes descending from the current working copy, then implements them one at a time.
 
 ## Installation
 
@@ -12,30 +14,30 @@ claude plugin add https://github.com/sgrowe/jj-ai
 
 ## Commands
 
-### `/jj-vcs:plan`
+### `/jj-flow:plan`
 
 Start a planning session. Explores the codebase and creates a chain of TODO commits for the work described.
 
 ```
-/jj-vcs:plan add input validation to the API endpoints
+/jj-flow:plan add input validation to the API endpoints
 ```
 
-### `/jj-vcs:implement`
+### `/jj-flow:implement`
 
 Implement planned TODO commits. Works through each change in order — reading the plan, implementing it, verifying acceptance criteria, and updating the description.
 
 ```
 # Implement all TODO descendants of the current change
-/jj-vcs:implement
+/jj-flow:implement
 
 # Implement a specific change by revset
-/jj-vcs:implement mq
+/jj-flow:implement mq
 
 # Implement a range of changes
-/jj-vcs:implement mq::vn
+/jj-flow:implement mq::vn
 
 # Use a custom jj log command to select changes
-/jj-vcs:implement jj log -r 'descendants(@) & description("TODO:")'
+/jj-flow:implement jj log -r 'descendants(@) & description("TODO:")'
 ```
 
 ## Skill
