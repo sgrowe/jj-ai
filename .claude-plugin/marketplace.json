@@ -8,7 +8,7 @@
       "name": "jj-flow",
       "source": "./jj-flow",
       "description": "Methodology for planning out future work in jj commits",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Sam Rowe"
       }
