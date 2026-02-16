@@ -1,5 +1,17 @@
 {
   "enabledPlugins": {
     "plugin-dev@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(jj log:*)",
+      "Bash(jj status:*)",
+      "Bash(jj show:*)",
+      "Bash(xargs ls:*)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
   }
 }
