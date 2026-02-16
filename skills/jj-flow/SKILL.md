@@ -10,7 +10,7 @@ jj new --no-edit --after @ --message 'TODO: future task to work on'
 ```
 
 - `--after @` add the new change as a child of the current working change (`@`)
-- `--no-edit` means do not mame the newly created change the new working change
+- `--no-edit` means do not make the newly created change the new working change
 - `--message` provides the change description
 
 ## Change description format

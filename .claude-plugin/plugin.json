@@ -1,5 +1,5 @@
 {
-  "name": "jj",
+  "name": "jj-vcs",
   "description": "Workflow tools for jj VCS including planning and organizing work using future commits",
-  "version": "1.0.0"
+  "version": "0.1.0"
 }
