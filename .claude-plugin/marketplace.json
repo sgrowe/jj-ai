@@ -1,0 +1,17 @@
+{
+  "name": "jj-ai",
+  "owner": {
+    "name": "Sam Rowe"
+  },
+  "plugins": [
+    {
+      "name": "jj-flow",
+      "source": "./jj-flow",
+      "description": "Methodology for planning out future work in jj commits",
+      "version": "1.0.0",
+      "author": {
+        "name": "Sam Rowe"
+      }
+    }
+  ]
+}
