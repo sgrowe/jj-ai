@@ -8,6 +8,27 @@ Plans and organises work using empty "future" commits as a chain of TODO changes
 
 ## Installation
 
+Add the following to `.claude/settings.json`:
+
+```json
+{
+  // .claude/settings.json
+  "extraKnownMarketplaces": {
+    "company-tools": {
+      "source": {
+        "source": "github",
+        "repo": "sgrowe/jj-ai"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "jj-flow@jj-ai": true
+  }
+}
+```
+
+or interactively:
+
 ```sh
 claude plugin add https://github.com/sgrowe/jj-ai
 ```
