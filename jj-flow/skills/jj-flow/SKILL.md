@@ -147,7 +147,8 @@ Once a change has been completed, carry out this checklist:
 - **All tests pass** — run all tests related to the area we're working on to check for regressions
 - **All `// AI:` comments removed** — double check none remain in the diff
 - **Lints and typechecks pass** — run the linter and typechecker
-- Update the change description to remove the `TODO:` prefix using `jj describe -m "New commit message"`. Add a clear description of what changes were made and why
+- Remove the `TODO:` prefix from the change description: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/remove_todo.sh`
+- Update the change description using `jj describe` to add a clear summary of what changes were made and why
 - Update the relevant spec doc for this change with any insights gained, and make sure it is still accurate and up-to-date
 
 Once you have completed all of the above steps then continue with implementing the next `TODO:` change (repeating the steps above)

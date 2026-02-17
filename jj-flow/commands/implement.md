@@ -31,7 +31,8 @@ For each TODO change, in order from nearest to furthest descendant:
 7. **Complete the change** following the jj-flow checklist:
    - Run relevant tests and lints and verify they pass
    - Double check all `// AI:` comments have been implemented and removed
-   - Update the change description: remove the `TODO:` prefix, add a clear description of what was done and why
+   - Remove the `TODO:` prefix: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/remove_todo.sh`
+   - Update the change description with a clear description of what was done and why
    - Update any relevant spec docs with insights gained
 
 8. **Continue** to the next TODO change
