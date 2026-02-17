@@ -12,9 +12,18 @@ jj new --after @ --message 'TODO: future task to work on'
 - `--after @` add the new change as a child of the current working change (`@`)
 - `--message` provides the change description
 
-Within each commit we plan out the work to be implemented by leaving detailed code comments (e.g `// AI: ...task description...`)
+This project follows strict test-driven development (TDD). During **planning**, each commit is seeded with **failing tests** that define the expected behaviour for that commit. `// AI:` comments are added alongside the tests as hints to guide and speed up the implementation. The tests are the specification — they define what "done" looks like.
 
-When it comes to then implementing those changes, we first switch to the first unimplemented commit (`jj edit <change_id>`), view the list of tasks to be completed in this commit (`jj diff`), and then analyse the related code and implement all of those tasks using test driven development. Once all of the tasks in that commit have been implemented and all of the tests pass we update the commit message (`jj describe -m "New commit message"`) and before moving on to the next unimplemented commit.
+During **implementation**, we switch to a planned commit, read its failing tests and `// AI:` hints, then write the production code to make all the tests pass. Once every test passes and all `// AI:` comments have been addressed and removed, the commit is complete.
+
+## Planning a commit
+
+Each planned commit must contain:
+
+1. **Failing tests** — Write test cases that describe the expected behaviour for this commit. The tests must fail (red) because the production code doesn't exist yet. Tests should be thorough enough to fully specify the commit's scope.
+2. **`// AI:` hint comments** — Add concise comments in the relevant source files (not the test files) to guide the implementor. These are hints, not the specification — the tests are the specification.
+
+The tests and hints together should make it possible for someone (or an AI) to implement the commit without needing any other context beyond the linked spec file.
 
 ## Change description format
 
@@ -27,7 +36,7 @@ For future planned changes include:
 
 ## Example planning workflow
 
-Planning future work:
+Planning future work. For each planned commit: create the commit, add failing tests, and add `// AI:` hints in the source files.
 
 ```sh
 ~/p/test> jj log
@@ -36,52 +45,82 @@ Planning future work:
 │
 ◆  z      root() 00000000
 
-~/p/test> jj new --after @ --message 'TODO: future task to work on'
-Working copy (@) now at: l      7d04fc34 (empty) TODO: future task to work on
+~/p/test> jj new --after @ --message 'TODO: add user validation'
+Working copy (@) now at: l      7d04fc34 (empty) TODO: add user validation
 Parent commit (@-):      o      38f2ddc6 Current working change
-Added 1 files, modified 0 files, removed 0 files
 
-# Add // AI: comments to relevant files describing the implementation tasks
-~/p/test> echo '// AI: implement the future task logic' >> x.txt
+# Seed the commit with failing tests that specify the expected behaviour
+~/p/test> cat >> tests/user_test.rs << 'EOF'
+#[cfg(test)]
+mod validate_user_tests {
+    use super::*;
+
+    #[test]
+    fn rejects_empty_username() {
+        let result = validate_user("");
+        assert!(!result.is_valid);
+        assert_eq!(result.errors, vec!["Username is required"]);
+    }
+
+    #[test]
+    fn accepts_valid_username() {
+        let result = validate_user("alice");
+        assert!(result.is_valid);
+        assert!(result.errors.is_empty());
+    }
+}
+EOF
+
+# Add // AI: hints in the source files to guide the implementation
+~/p/test> cat >> src/user.rs << 'EOF'
+// AI: implement validate_user — see tests/user_test.rs for the full spec
+// AI: username must be non-empty, return ValidationResult { is_valid, errors }
+EOF
+
 ~/p/test> jj log
 @  l      sgrowe       2 seconds ago 7d04fc34
-│  TODO: future task to work on
+│  TODO: add user validation
 │
 ○  o      sgrowe       20 seconds ago 38f2ddc6
 │  Current working change
 │
 ◆  z      root() 00000000
 
-~/p/test> jj new --after @ --message 'TODO: a second task to work on after `l`'
-Working copy (@) now at: v      09291616 (empty) TODO: a second task to work on after `l`
-Parent commit (@-):      l      7d04fc34 TODO: future task to work on
-Added 1 files, modified 0 files, removed 0 files
+~/p/test> jj new --after @ --message 'TODO: add email validation'
+Working copy (@) now at: v      09291616 (empty) TODO: add email validation
+Parent commit (@-):      l      7d04fc34 TODO: add user validation
 
-# Add // AI: comments for the second task
-~/p/test> echo '// AI: implement the second task' >> x.txt
-~/p/test> jj log
-@  v      sgrowe       2 seconds ago 09291616
-│  TODO: a second task to work on after `l`
-│
-○  l      sgrowe       32 seconds ago 7d04fc34
-│  TODO: future task to work on
-│
-○  o      sgrowe       50 seconds ago 38f2ddc6
-│  Current working change
-│
-◆  z      root() 00000000
+# Seed with failing tests
+~/p/test> cat >> tests/user_test.rs << 'EOF'
+#[cfg(test)]
+mod validate_email_tests {
+    use super::*;
+
+    #[test]
+    fn rejects_invalid_email() {
+        assert!(!validate_email("not-an-email"));
+    }
+
+    #[test]
+    fn accepts_valid_email() {
+        assert!(validate_email("alice@example.com"));
+    }
+}
+EOF
+
+# Add // AI: hints
+~/p/test> cat >> src/user.rs << 'EOF'
+// AI: implement validate_email — basic format check, see tests
+EOF
 
 # Return to the original working copy
 ~/p/test> jj edit o
-Working copy (@) now at: o      38f2ddc6 Current working change
-Parent commit (@-):      z      00000000 (empty) (no description set)
-Added 0 files, modified 0 files, removed 0 files
 ~/p/test> jj log
 ○  v      sgrowe       32 seconds ago 09291616
-│  TODO: a second task to work on after `l`
+│  TODO: add email validation
 │
 ○  l      sgrowe       1 minute ago 7d04fc34
-│  TODO: future task to work on
+│  TODO: add user validation
 │
 @  o      sgrowe       2 minutes ago 38f2ddc6
 │  Current working change
@@ -91,20 +130,25 @@ Added 0 files, modified 0 files, removed 0 files
 
 ## Implementing planned changes
 
-To then start working on these planned items you would, one at a time:
+To start working on planned items, one commit at a time:
 
-- switch to the change we will now be working on (`jj edit <change_id>`)
-- view the change description and planned changes in the current commit (`jj show`) along with the linked spec file, and explore all of the related code
-- create a task list of all the tasks to be done as part of this commit and then carry them out
+1. Switch to the commit: `jj edit <change_id>`
+2. Read the change description (`jj show`) and the linked spec file
+3. **Run the tests** — they should fail (red). This confirms the tests are correctly seeded and the work hasn't already been done
+4. Read the failing tests to understand the expected behaviour, and read the `// AI:` hints in the source files
+5. Write the production code to make all the failing tests pass
+6. Remove all `// AI:` comments once implemented
+7. Run the full test suite and lints to verify everything passes (green)
 
 ## Completing a change
 
 Once a change has been completed, carry out this checklist:
 
-- make sure all of the acceptance criteria have been met (e.g. run the relevant tests and lints and verify they pass)
-- double check all `// AI:` comments have been implemented and removed
-- update the change description to remove the `TODO:`, and add a clear description of what changes were made and why
-- update the relevant spec doc for this change with any insights gained, and make sure it is still accurate and up-to-date
+- **All tests pass** — run all tests related to the area we're working on to check for regressions
+- **All `// AI:` comments removed** — double check none remain in the diff
+- **Lints and typechecks pass** — run the linter and typechecker
+- Update the change description to remove the `TODO:` prefix using `jj describe -m "New commit message"`. Add a clear description of what changes were made and why
+- Update the relevant spec doc for this change with any insights gained, and make sure it is still accurate and up-to-date
 
 Once you have completed all of the above steps then continue with implementing the next `TODO:` change (repeating the steps above)
 
