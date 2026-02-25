@@ -25,17 +25,15 @@ For each TODO change, in order from nearest to furthest descendant:
 1. **Switch to the change**: `jj edit <change_id>`
 2. **Review the plan**: Run `jj show` to read the change description and the `// AI:` comments in the diff
 3. **Explore the code**: Read all relevant files referenced in the spec and the `// AI:` comments
-4. **Create a task list** from the `// AI:` comments in the code
-5. **Carry out the plan**: Implement each `// AI:` task, writing code, tests, etc. Remove each `// AI:` comment once its task is done.
-6. **Verify**: Run the relevant tests and checks. If they don't pass, stop and ask the user for help.
+4. **Create a task list** from the `// AI:` comments in the code, use red/green test driven development
+5. **Carry out the plan**: add failing tests first, then implement the functionality so that those tests pass
+6. **Verify**: Run the relevant tests and type checks to make sure the change is working as expected
 7. **Complete the change** following the jj-flow checklist:
-   - Run relevant tests and lints and verify they pass
-   - Double check all `// AI:` comments have been implemented and removed
-   - Remove the `TODO:` prefix: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/remove_todo.sh`
-   - Update the change description with a clear description of what was done and why
+   - Check the diff to make sure all `// AI:` comments have been implemented and removed
+   - Remove the `TODO:` prefix from the commit description
    - Update any relevant spec docs with insights gained
 
-8. **Continue** to the next TODO change
+8. **Continue** to the next TODO change (list the remaining commits with `jj log` and then move to the next one with `jj edit <next_change_id>`)
 
 ## Important
 
