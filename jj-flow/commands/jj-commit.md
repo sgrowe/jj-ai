@@ -1,5 +1,6 @@
 ---
 description: Commit current changes using jj
+effort: low
 ---
 
 Commit these changes using `jj commit -m "Commit message"`
