@@ -9,5 +9,6 @@ for change in change_ids
     jj edit $change
     jj status
     claude -p "/ralph-loop:ralph-loop 'Implement these changes using test-driven development: $(jj show $change --git)' --completion-promise \"DONE\""
+    ./jj-flow/scripts/remove_todo.sh
     jj status
 end
